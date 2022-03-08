@@ -1,14 +1,59 @@
 <?php
 
 namespace UserLoginService\Application;
+use UserLoginService\Domain\User;
+use UserLoginService\Infrastructure\Infrastructure;
 
 class UserLoginService
 {
+    const LOGIN_CORRECTO = "Login correcto";
+    const LOGIN_INCORRECTO = "Login incorrecto";
+    const USUARIO_NO_LOGEADO = "Usuario no logeado";
+    const OK = "OK";
     private array $loggedUsers = [];
+    private SessionManager $sessionManager;
 
-    public function manualLogin(): string
+    //se pasa dependencia por constructor
+    public function __construct(SessionManager $sessionManager)
     {
-        return "user logged";
+        $this->sessionManager = $sessionManager;
     }
+
+    public function manualLogin(User $user): string
+    {
+        if(!empty($user->getUserName())){
+            array_push($this->loggedUsers,$user->getUserName());
+            return "user logged";
+        }
+        return "error";
+    }
+
+    public function countExternalsSession():int
+    {
+        return  $this->sessionManager->getSessions();
+    }
+
+    public function login(string $username, string $password):string{
+        if($this->sessionManager->login($username,$password)) {
+            $user = new User($username,$password);
+            array_push($this->loggedUsers,$user->getUserName());
+            return self::LOGIN_CORRECTO;
+        }else{
+            return self::LOGIN_INCORRECTO;
+        }
+    }
+
+    public function logout(User $user):string{
+        if(in_array($user->getUserName(),$this->loggedUsers)){
+            return self::OK;
+        }
+        $this->sessionManager->logout($user->getUserName());
+
+        return self::USUARIO_NO_LOGEADO;
+    }
+
+
+
+
 
 }
