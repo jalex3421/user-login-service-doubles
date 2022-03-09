@@ -7,10 +7,10 @@ namespace UserLoginService\Tests\Application;
 use PHPUnit\Framework\TestCase;
 use UserLoginService\Application\UserLoginService;
 use UserLoginService\Domain\User;
+use UserLoginService\Tests\Double\SpySessionManager;
 use UserLoginService\Tests\Double\StubSessionManager;
 use UserLoginService\Tests\Double\DummySessionManager;
-use UserLoginService\Tests\Double\FakeSessionManager;
-use UserLoginService\Tests\Double\SpySessionManager; //prueba que algo ha ocurrido !!
+use UserLoginService\Tests\Double\FakeSessionManager;//prueba que algo ha ocurrido !!
 
 final class UserLoginServiceTest extends TestCase
 {
@@ -31,7 +31,7 @@ final class UserLoginServiceTest extends TestCase
     {
         $userLoginService=  new UserLoginService(new DummySessionManager());
 
-        $user = new User("Kelly");
+        $user = new User("Kelly","wakasa");
 
         $this->assertEquals("user logged", $userLoginService->manualLogin($user));
     }
@@ -43,7 +43,7 @@ final class UserLoginServiceTest extends TestCase
     {
         $userLoginService=  new UserLoginService(new DummySessionManager());
 
-        $user = new User("Alex");
+        $user = new User("Alex","1234");
 
         $this->assertEquals("user logged", $userLoginService->manualLogin($user));
     }
@@ -85,12 +85,14 @@ final class UserLoginServiceTest extends TestCase
      */
     public function logOutSuccess()
     {
-        $userLoginService=  new UserLoginService(new DummySessionManager());
-
         $user = new User("Asta","Yuno");
+        $sessionManager = new SpySessionManager();
+        $userLoginService=  new UserLoginService($sessionManager);
+
+
         $userLoginService->manualLogin($user);
 
-        $this->assertEquals( "OK", $userLoginService->logout($user));
+        $this->assertEquals( "OK", $userLoginService->logout($user,1));
     }
 
     /**
@@ -102,5 +104,7 @@ final class UserLoginServiceTest extends TestCase
         $user= new User("Kelly","1234");
         $this->assertEquals( "Usuario no logeado", $userLoginService->logout($user));
     }
+
+
 
 }

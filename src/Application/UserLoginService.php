@@ -43,12 +43,13 @@ class UserLoginService
         }
     }
 
-    public function logout(User $user):string{
+    public function logout(User $user,int $numberOfCalls):string{
         if(in_array($user->getUserName(),$this->loggedUsers)){
-            return self::OK;
+            $this->sessionManager->logout($user->getUserName());
+            if($this->sessionManager->VerifylogoutCalls($numberOfCalls)) {
+                return self::OK;
+            }
         }
-        $this->sessionManager->logout($user->getUserName());
-
         return self::USUARIO_NO_LOGEADO;
     }
 

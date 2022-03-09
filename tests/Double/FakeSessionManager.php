@@ -23,7 +23,7 @@ class FakeSessionManager implements SessionManager
         return 2;
     }
 
-    public function logout(string $getUserName):string{
+    public function logout(string $getUserName):void{
         //TODO
     }
 }

@@ -8,5 +8,5 @@ interface SessionManager
 
     public function login(string $userName, string $password): bool;
 
-    public function logout(string $getUserName):string;
+    public function logout(string $getUserName):void;
 }
