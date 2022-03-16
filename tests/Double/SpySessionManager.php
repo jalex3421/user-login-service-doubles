@@ -3,6 +3,7 @@
 
 namespace UserLoginService\tests\Double;
 
+use Exception;
 use UserLoginService\Application\SessionManager;
 use function PHPUnit\Framework\throwException;
 

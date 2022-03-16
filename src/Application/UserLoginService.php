@@ -1,8 +1,10 @@
 <?php
 
 namespace UserLoginService\Application;
+use Exception;
 use UserLoginService\Domain\User;
 use UserLoginService\Infrastructure\Infrastructure;
+use function PHPUnit\Framework\throwException;
 
 class UserLoginService
 {
@@ -43,6 +45,7 @@ class UserLoginService
         }
     }
 
+    //spy class required
     public function logout(User $user,int $numberOfCalls):string{
         if(in_array($user->getUserName(),$this->loggedUsers)){
             $this->sessionManager->logout($user->getUserName());
@@ -53,8 +56,24 @@ class UserLoginService
         return self::USUARIO_NO_LOGEADO;
     }
 
-
-
+    //mock stuff
+    public function secureLogin(User $user)
+    {
+        try {
+            $this->sessionManager->secureLogin($user->getUserName());
+        }catch (Exception $exception) {
+            if ($exception->getMessage() === "User does not exist") {
+                return "User does not exist";
+            }
+            if ($exception->getMessage() === "User incorrect credentials") {
+                return "User incorrect credentials";
+            }
+            if ($exception->getMessage() === "Service not responding"){
+                return "Service not responding";
+            }
+        }
+        return 'ok';
+    }
 
 
 }

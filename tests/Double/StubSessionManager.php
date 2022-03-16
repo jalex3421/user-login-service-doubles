@@ -29,4 +29,9 @@ class StubSessionManager implements SessionManager
     public function logout(string $getUserName):void{
         //TODO
     }
+
+    public function VerifylogoutCalls(int $int):bool
+    {
+        //TODO
+    }
 }
