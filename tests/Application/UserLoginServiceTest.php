@@ -188,17 +188,15 @@ final class UserLoginServiceTest extends TestCase
         {
             $user = new User('Asta', 'Yuno');
             $sessionManager = \Mockery::mock(SessionManager::class);
-            $userLoginService = new UserLoginService($sessionManager);
-
-          $sessionManager
+            $sessionManager
               ->expects('secureLogin')
               ->with('Asta')
-              ->once()
+              ->once() // times(1) is the same
               ->andThrow(new Exception('User does not exist'));
 
-          $secureLoginResponse = $userLoginService->secureLogin($user);
+            $userLoginService = new UserLoginService($sessionManager);
 
-          $this->assertEquals('User does not exist', $secureLoginResponse);
+            $this->assertEquals('User does not exist', $userLoginService->secureLogin($user));
 
         }
 
@@ -209,17 +207,15 @@ final class UserLoginServiceTest extends TestCase
     {
         $user = new User('Asta', 'Yuno');
         $sessionManager = \Mockery::mock(SessionManager::class);
-        $userLoginService = new UserLoginService($sessionManager);
-
         $sessionManager
             ->shouldReceive('secureLogin')
-           ->times(1)
+           ->times(1) //once is the same
            ->with('Asta')
             ->andThrow(new \Exception('User does not exist'));
 
-        $secureLoginResponse = $userLoginService->secureLogin($user);
+        $userLoginService = new UserLoginService($sessionManager);
 
-        $this->assertEquals('User does not exist', $secureLoginResponse);
+        $this->assertEquals('User does not exist', $userLoginService->secureLogin($user));
     }
 
 }
